@@ -2,6 +2,7 @@ import sys
 import getopt
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 from scipy.fftpack import dct, idct
 from PIL import Image
 
@@ -72,9 +73,6 @@ def dct_loop(img_array, loop_times):
         j = 0
         for j in range (0, 4096): #4096
             blockArr[j] = dct(np.array(blockArr[j]), 1)
-        '''j = 4096
-        for j in range (4095, 0):
-            blockArr[j] = dct(blockArr[j])'''
 
         # reshape
         dct_arr = unblockshaped(blockArr, 512, 512)
@@ -90,9 +88,6 @@ def idct_loop(img_array, loop_times):
         blockArr = blockshaped(img_array, 8, 8)
 
         # run DCT on each chunk
-        '''j = 4096
-        for j in range (4095, 0):
-            blockArr[j] = idct(blockArr[j])'''
         j = 0
         for j in range (0, 4096):
             blockArr[j] = idct(np.array(blockArr[j]), 1) / 6
@@ -104,10 +99,22 @@ def idct_loop(img_array, loop_times):
 
     return dct_arr
 
+def calculate_error(img1_arr, img2_arr):
+    arr1 = img1_arr.ravel()
+    arr2 = img2_arr.ravel()
+
+    i = 0
+    error = 0.0
+    for i in range (0, 262144):
+        error += math.exp(int(arr1[i]) - int(arr2[i])) / 262144
+        #error = error / 262144
+
+    return error
+
 def main(argv):
     inputFile = ""
 
-    #load file with command line args
+    # load file with command line args
     try:
         opts, args = getopt.getopt(argv,"i:")
     except getopt.GetoptError:
@@ -125,23 +132,17 @@ def main(argv):
         print("USAGE: python3 main.py -i <file>")
         sys.exit()
 
-    #load image as array
+    # load image as array
     print("Loading image...")
     imgArr = load_image_as_array(inputFile)
     print("Image loaded!")
+    print()
 
-    #do klt
+    # do klt
+    print("Determining KLT values...")
     ktm, vect, val = KLT(imgArr);
-    '''
-    i = 0
-    for i in range(0, 16):
-        plt.stem(val[i,:], linefmt='-', markerfmt='o')
-        plt.savefig('vec'+str(i)+'.png', bbox_inches='tight')
-        plt.clf()
-    '''
-    print(ktm)
-    print(vect)
-    print(val)
+    print("Found KLT values!")
+    print()
 
     '''
     Now we need to generate the debauchies images with debauchies filter bank
@@ -150,19 +151,21 @@ def main(argv):
     # run it through DCT 8x8 at a time
     # 4096 8x8 blocks in 512 x 512 array
     # 64 blocks in row, col
-    print()
-    print(dct(np.array([3., 7., 6.]), 1))
-    print(idct(dct(np.array([3., 7., 6.]), 1), 1)/6)
 
     dctArr = dct_loop(imgArr, 1)
     img2 = Image.fromarray(dctArr, 'L')
-    #img2.show(img2)
 
     fixed = idct_loop(dctArr, 1)
     img2 = Image.fromarray(fixed, 'L')
     img2.show(img2)
 
-    return
+    '''
+    Calculate the error between the two images
+    '''
+
+    imgError = calculate_error(np.asarray(imgArr), np.asarray(img2))
+    print (imgError)
+    print ("{:.3f}%".format(imgError * 100))
 
 if __name__ == "__main__":
 	main(sys.argv[1:])
