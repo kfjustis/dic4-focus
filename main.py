@@ -58,5 +58,9 @@ def main(argv):
     print(vect)
     print(val)
 
+    '''
+    Now we need to generate the debauchies images with debauchies filter bank
+    '''
+
 if __name__ == "__main__":
 	main(sys.argv[1:])
