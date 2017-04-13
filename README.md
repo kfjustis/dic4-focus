@@ -16,4 +16,4 @@ the original image.
 <img src="https://raw.githubusercontent.com/kfjustis/dic4-focus/master/DWT2D_transform.bmp" width="256">
 
 ## After inverse transform
-<img src="https://raw.githubusercontent.com/kfjustis/dic4-focus/master/iDWT2d_reconstruction.bmp" width="256">
+<img src="https://raw.githubusercontent.com/kfjustis/dic4-focus/master/iDWT2D_reconstruction.bmp" width="256">

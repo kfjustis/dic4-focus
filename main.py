@@ -168,7 +168,7 @@ def main(argv):
     print("Applying inverse transform and displaying image...")
     finalArr = np.array((pywt.idwt2(coeffs, 'haar')), dtype=np.uint8)
     pass2 = Image.fromarray(finalArr, 'L')
-    pass2.save('iDWT2d_reconstruction.bmp')
+    pass2.save('iDWT2D_reconstruction.bmp')
     print("    Done!")
 
     '''
