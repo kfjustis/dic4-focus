@@ -156,14 +156,17 @@ def main(argv):
     cA, (cH, cV, cD) = coeffs
     print("    Done!")
 
+    dwtCompList = [cA, cH, cV, cD]
+    stitchArr = unblockshaped(np.array(dwtCompList), 512, 512)
+
     print("Displaying image...")
-    pass1 = Image.fromarray(cA, 'L')
+    pass1 = Image.fromarray(stitchArr, 'L')
     pass1.save('DWT2D_transform.bmp')
     print("    Done!")
 
     print("Applying inverse transform and displaying image...")
     finalArr = np.array((pywt.idwt2(coeffs, 'haar')), dtype=np.uint8)
-    pass2 = Image.fromarray(finalArr, 'L')
+    pass2 = Image.fromarray(finalArr)
     pass2.save('iDWT2D_reconstruction.bmp')
     print("    Done!")
     print()
