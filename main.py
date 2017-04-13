@@ -7,11 +7,20 @@ import pywt
 from scipy.fftpack import dct, idct
 from PIL import Image
 
-def KLT(array):
-    '''
-    Source: https://sukhbinder.wordpress.com/2014/09/11/karhunen-loeve-
+'''
+References:
+    https://sukhbinder.wordpress.com/2014/09/11/karhunen-loeve-
     transform-in-python/
-    '''
+
+    http://stackoverflow.com/questions/3680262/how-to-slice-a-2d-python-
+    array-fails-with-typeerror-list-indices-must-be-int
+
+    http://stackoverflow.com/questions/16856788/slice-2d-array-into-smaller
+    -2d-arrays
+'''
+
+def KLT(array):
+
     val, vec = np.linalg.eig(np.cov(array))
     klt = np.dot(vec, array)
     return klt, vec, val
@@ -22,42 +31,30 @@ def load_image_as_array(imgFile):
 
 	return imgArray
 
-'''
-Source: http://stackoverflow.com/questions/3680262/how-to-slice-a-2d-python-
-array-fails-with-typeerror-list-indices-must-be-int
-'''
 def get_2d_list_slice(self, matrix, start_row, end_row, start_col, end_col):
     return [row[start_col:end_col] for row in matrix[start_row:end_row]]
 
-'''
-Source: http://stackoverflow.com/questions/16856788/slice-2d-array-into-smaller
--2d-arrays
-'''
-def blockshaped(arr, nrows, ncols):
-    """
-    Return an array of shape (n, nrows, ncols) where
-    n * nrows * ncols = arr.size
+"""
+Return an array of shape (n, nrows, ncols) where
+n * nrows * ncols = arr.size
 
-    If arr is a 2D array, the returned array should look like n subblocks with
-    each subblock preserving the "physical" layout of arr.
-    """
+If arr is a 2D array, the returned array should look like n subblocks with
+each subblock preserving the "physical" layout of arr.
+"""
+def blockshaped(arr, nrows, ncols):
     h, w = arr.shape
     return (arr.reshape(h//nrows, nrows, -1, ncols)
                .swapaxes(1,2)
                .reshape(-1, nrows, ncols))
 
-'''
-Source: http://stackoverflow.com/questions/16873441/form-a-big-2d-array-from-
-multiple-smaller-2d-arrays/16873755#16873755
-'''
-def unblockshaped(arr, h, w):
-    """
-    Return an array of shape (h, w) where
-    h * w = arr.size
+"""
+Return an array of shape (h, w) where
+h * w = arr.size
 
-    If arr is of shape (n, nrows, ncols), n sublocks of shape (nrows, ncols),
-    then the returned array preserves the "physical" layout of the sublocks.
-    """
+If arr is of shape (n, nrows, ncols), n sublocks of shape (nrows, ncols),
+then the returned array preserves the "physical" layout of the sublocks.
+"""
+def unblockshaped(arr, h, w):
     n, nrows, ncols = arr.shape
     return (arr.reshape(h//nrows, -1, nrows, ncols)
                .swapaxes(1,2)
@@ -165,13 +162,13 @@ def main(argv):
 
     print("Displaying image...")
     pass1 = Image.fromarray(cA, 'L')
-    pass1.show()
+    pass1.save('DWT2D_transform.bmp')
     print("    Done!")
 
     print("Applying inverse transform and displaying image...")
     finalArr = np.array((pywt.idwt2(coeffs, 'haar')), dtype=np.uint8)
     pass2 = Image.fromarray(finalArr, 'L')
-    pass2.show()
+    pass2.save('iDWT2d_reconstruction.bmp')
     print("    Done!")
 
     '''
