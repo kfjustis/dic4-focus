@@ -142,10 +142,6 @@ def main(argv):
     print("    Found KLT values!")
     print()
 
-    '''
-    Now we need to generate the debauchies images with debauchies filter bank
-    '''
-
     # run it through DCT 8x8 at a time
     # 4096 8x8 blocks in 512 x 512 array
     # 64 blocks in row, col
