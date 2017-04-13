@@ -7,7 +7,7 @@ The program takes an image as input, applies the DWT, and applies the inverse to
 the original image.
 
 ## Running the program
-    python main.py -i <input_image_file>
+    python3 main.py -i <input_image_file>
 
 ## Original Image
 <img src="https://github.com/kfjustis/dic4-focus/blob/master/lena.png" width="256">
