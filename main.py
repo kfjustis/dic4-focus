@@ -160,8 +160,10 @@ def main(argv):
     stitchArr = unblockshaped(np.array(dwtCompList), 512, 512)
 
     print("Displaying image...")
-    pass1 = Image.fromarray(stitchArr, 'L')
-    pass1.save('DWT2D_transform.bmp')
+    #pass1 = Image.fromarray(stitchArr, 'L')
+    pass1 = Image.fromarray(stitchArr)
+    pass1.show()
+    #pass1.save('DWT2D_transform.spi', format='SPIDER')
     print("    Done!")
 
     print("Applying inverse transform and displaying image...")
