@@ -3,6 +3,7 @@ import getopt
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+import pywt
 from scipy.fftpack import dct, idct
 from PIL import Image
 
@@ -71,8 +72,8 @@ def dct_loop(img_array, loop_times):
 
         # run DCT on each chunk
         j = 0
-        for j in range (0, 4096): #4096
-            blockArr[j] = dct(np.array(blockArr[j]), 1)
+        for j in range (0, 4096): # for all the 8x8 blocks
+            blockArr[j] = dct(np.array(blockArr[j]), 2, norm='ortho')
 
         # reshape
         dct_arr = unblockshaped(blockArr, 512, 512)
@@ -90,7 +91,7 @@ def idct_loop(img_array, loop_times):
         # run DCT on each chunk
         j = 0
         for j in range (0, 4096):
-            blockArr[j] = idct(np.array(blockArr[j]), 1) / 6
+            blockArr[j] = idct(np.array(blockArr[j]), 2, norm='ortho')
 
 
         # reshape
@@ -106,8 +107,8 @@ def calculate_error(img1_arr, img2_arr):
     i = 0
     error = 0.0
     for i in range (0, 262144):
-        error += math.exp(int(arr1[i]) - int(arr2[i])) / 262144
-        #error = error / 262144
+        error += math.exp(int(arr1[i]) - int(arr2[i]))
+        error = error / 262144
 
     return error
 
@@ -152,20 +153,52 @@ def main(argv):
     # 4096 8x8 blocks in 512 x 512 array
     # 64 blocks in row, col
 
+    '''
     dctArr = dct_loop(imgArr, 1)
     img2 = Image.fromarray(dctArr, 'L')
+    img2.show(img2)
+    '''
 
+    print("Printing image array...")
+    print(imgArr)
+    print("Printed!")
+    print()
+
+    print("Applying one-level DWT...")
+    coeffs = pywt.dwt2(imgArr, 'haar')
+    cA, (cH, cV, cD) = coeffs
+    print("Applied!")
+
+    print("Displaying image...")
+    pass1 = Image.fromarray(cA, 'L')
+    #pass1.show()
+
+    print("Applying inverse transform...")
+    #coeffs2 = pywt.idwt2(coeffs, 'haar')
+    #cA2, (cH2, cV2, cD2) = coeffs2
+
+    print("Displaying inverse transform image...")
+    finalArr = np.array((pywt.idwt2(coeffs, 'haar')), dtype=np.uint8)
+    pass2 = Image.fromarray(finalArr, 'L')
+    pass2.show()
+
+
+    '''
     fixed = idct_loop(dctArr, 1)
     img2 = Image.fromarray(fixed, 'L')
     img2.show(img2)
+    '''
+
 
     '''
     Calculate the error between the two images
     '''
 
-    imgError = calculate_error(np.asarray(imgArr), np.asarray(img2))
+    '''
+    #imgError = calculate_error(np.asarray(imgArr), np.asarray(img2))
     print (imgError)
-    print ("{:.3f}%".format(imgError * 100))
+    print ("{:.1f}%".format(imgError * 100))
+    '''
 
 if __name__ == "__main__":
 	main(sys.argv[1:])
