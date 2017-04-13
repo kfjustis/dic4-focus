@@ -170,6 +170,7 @@ def main(argv):
     pass2 = Image.fromarray(finalArr, 'L')
     pass2.save('iDWT2D_reconstruction.bmp')
     print("    Done!")
+    print()
 
     '''
     Calculate the error between the two images
