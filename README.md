@@ -13,7 +13,7 @@ the original image.
 <img src="https://github.com/kfjustis/dic4-focus/blob/master/lena.png" width="256">
 
 ## After DWT
-<img src="https://raw.githubusercontent.com/kfjustis/dic4-focus/master/DWT2D_transform.PNG" width="256">
+![](http://i.imgur.com/v03t4Y4.png)
 
 ## After inverse transform
 <img src="https://raw.githubusercontent.com/kfjustis/dic4-focus/master/iDWT2D_reconstruction.bmp" width="256">
