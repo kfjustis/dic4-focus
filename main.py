@@ -136,13 +136,13 @@ def main(argv):
     # load image as array
     print("Loading image...")
     imgArr = load_image_as_array(inputFile)
-    print("Image loaded!")
+    print("    Image loaded!")
     print()
 
     # do klt
     print("Determining KLT values...")
     ktm, vect, val = KLT(imgArr);
-    print("Found KLT values!")
+    print("    Found KLT values!")
     print()
 
     '''
@@ -153,52 +153,33 @@ def main(argv):
     # 4096 8x8 blocks in 512 x 512 array
     # 64 blocks in row, col
 
-    '''
-    dctArr = dct_loop(imgArr, 1)
-    img2 = Image.fromarray(dctArr, 'L')
-    img2.show(img2)
-    '''
-
     print("Printing image array...")
     print(imgArr)
-    print("Printed!")
+    print("    Done!")
     print()
 
     print("Applying one-level DWT...")
     coeffs = pywt.dwt2(imgArr, 'haar')
     cA, (cH, cV, cD) = coeffs
-    print("Applied!")
+    print("    Done!")
 
     print("Displaying image...")
     pass1 = Image.fromarray(cA, 'L')
-    #pass1.show()
+    pass1.show()
+    print("    Done!")
 
-    print("Applying inverse transform...")
-    #coeffs2 = pywt.idwt2(coeffs, 'haar')
-    #cA2, (cH2, cV2, cD2) = coeffs2
-
-    print("Displaying inverse transform image...")
+    print("Applying inverse transform and displaying image...")
     finalArr = np.array((pywt.idwt2(coeffs, 'haar')), dtype=np.uint8)
     pass2 = Image.fromarray(finalArr, 'L')
     pass2.show()
-
-
-    '''
-    fixed = idct_loop(dctArr, 1)
-    img2 = Image.fromarray(fixed, 'L')
-    img2.show(img2)
-    '''
-
+    print("    Done!")
 
     '''
     Calculate the error between the two images
     '''
-
-    '''
-    #imgError = calculate_error(np.asarray(imgArr), np.asarray(img2))
-    print (imgError)
-    print ("{:.1f}%".format(imgError * 100))
-    '''
+    print("Calculating error between the original image and final...")
+    imgError = calculate_error(np.asarray(imgArr), np.asarray(finalArr))
+    print ("Mean squared error: ""{:.12}%".format(float(imgError * 100)))
 
 if __name__ == "__main__":
 	main(sys.argv[1:])
